@@ -1,11 +1,22 @@
+from datetime import datetime
 from uuid import uuid4
 
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy.types import UUID, Uuid
+from sqlalchemy.sql import func
+from sqlalchemy.types import UUID, DateTime, Uuid
 
 
 class Base(DeclarativeBase):
     pass
+
+
+class TokenEntity(Base):
+    __tablename__ = "token_blacklist"
+
+    token: Mapped[str] = mapped_column(unique=True, primary_key=True)
+    expires: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=func.now()
+    )
 
 
 class UserEntity(Base):
