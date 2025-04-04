@@ -15,24 +15,18 @@ from app.persistence.repository.token import TokenRepository
 from fastapi import Depends
 
 
-def _create_token(data: dict, expires_delta: datetime):
-    payload = data.copy()
-    payload.update({"exp": expires_delta})
-    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-
-
 def create_access_token(user_id: UUID):
-    payload = {"type": "access", "sub": str(user_id)}
     expires = datetime.now(timezone.utc) + timedelta(
         minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )
-    return _create_token(payload, expires)
+    payload = {"type": "access", "sub": str(user_id), "exp": expires}
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 
 def create_refresh_token(user_id: UUID):
-    payload = {"type": "refresh", "sub": str(user_id)}
     expires = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
-    return _create_token(payload, expires)
+    payload = {"type": "refresh", "sub": str(user_id), "exp": expires}
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 
 def verify_access_token(token: str):
@@ -41,7 +35,7 @@ def verify_access_token(token: str):
         if payload.get("type") != "access" or payload.get("sub") is None:
             return None
         return payload
-    except Exception:
+    except jwt.InvalidTokenError:
         return None
 
 
@@ -51,7 +45,7 @@ def verify_refresh_token(token: str):
         if payload.get("type") != "refresh" or payload.get("sub") is None:
             return None
         return payload
-    except Exception:
+    except jwt.InvalidTokenError:
         return None
 
 
@@ -71,22 +65,9 @@ class TokenService:
         return Tokens(access_token=access_token, refresh_token=refresh_token)
 
     def create(self, user_id, token_type: TokenType) -> Tokens:
-        def __create_token(data: dict, expires_delta: datetime) -> str:
-            payload = data.copy()
-            payload.update({"exp": expires_delta})
-            return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-
         tokens = Tokens()
         if token_type == TokenType.BOTH or token_type == TokenType.ACCESS:
-            payload = {"type": "access", "sub": str(user_id)}
-            expires = datetime.now(timezone.utc) + timedelta(
-                minutes=ACCESS_TOKEN_EXPIRE_MINUTES
-            )
-            tokens.access_token = __create_token(payload, expires)
+            tokens.access_token = create_access_token(user_id)
         if token_type == TokenType.BOTH or token_type == TokenType.REFRESH:
-            payload = {"type": "refresh", "sub": str(user_id)}
-            expires = datetime.now(timezone.utc) + timedelta(
-                days=REFRESH_TOKEN_EXPIRE_DAYS
-            )
-            tokens.refresh_token = __create_token(payload, expires)
+            tokens.refresh_token = create_refresh_token(user_id)
         return tokens
