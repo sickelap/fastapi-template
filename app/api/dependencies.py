@@ -1,16 +1,10 @@
 import uuid
-from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 import jwt
 
-from app.config import (
-    ACCESS_TOKEN_EXPIRE_MINUTES,
-    ALGORITHM,
-    REFRESH_TOKEN_EXPIRE_DAYS,
-    SECRET_KEY,
-)
-from app.models import TokenType, User, UserInDB
+from app.config import ALGORITHM, SECRET_KEY
+from app.models import User, UserInDB
 from app.service.user import UserService
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -46,23 +40,3 @@ def get_current_active_user(
     if not user.is_active:
         return None
     return user
-
-
-def create_token(user_id, token_type: TokenType):
-    def __create_token(data: dict, expires_delta: datetime) -> str:
-        payload = data.copy()
-        payload.update({"exp": expires_delta})
-        return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-
-    tokens = dict()
-    if token_type == TokenType.BOTH or token_type == TokenType.ACCESS:
-        payload = {"type": "access", "sub": str(user_id)}
-        expires = datetime.now(timezone.utc) + timedelta(
-            minutes=ACCESS_TOKEN_EXPIRE_MINUTES
-        )
-        tokens["access_token"] = __create_token(payload, expires)
-    if token_type == TokenType.BOTH or token_type == TokenType.REFRESH:
-        payload = {"type": "refresh", "sub": str(user_id)}
-        expires = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
-        tokens["refresh_token"] = __create_token(payload, expires)
-    return tokens

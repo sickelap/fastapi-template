@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel, EmailStr
@@ -10,20 +11,17 @@ class TokenType(Enum):
     BOTH = "both"
 
 
-class Token(BaseModel):
-    pass
-
-
-class AccessToken(Token):
+class AccessToken(BaseModel):
     access_token: str
 
 
-class RefreshToken(Token):
+class RefreshToken(BaseModel):
     refresh_token: str
 
 
-class Tokens(AccessToken, RefreshToken):
-    pass
+class Tokens(BaseModel):
+    access_token: Optional[str] = None
+    refresh_token: Optional[str] = None
 
 
 class User(BaseModel):
