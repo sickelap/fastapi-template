@@ -3,10 +3,10 @@ from typing import Iterator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.config import SQLALCHEMY_DATABASE_URL
+from app.config import settings
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
+    settings.SQLALCHEMY_DATABASE_URL,
     echo=True,
 )
 

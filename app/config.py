@@ -1,10 +1,25 @@
-import os
+from pathlib import Path
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
-REFRESH_TOKEN_EXPIRE_DAYS = int(os.environ.get("REFRESH_TOKEN_EXPIRE_DAYS", 7))
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-SQLALCHEMY_DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL", "")
 
-ALLOW_REGISTER = os.getenv("ALLOW_REGISTER") == "True"
+def find_dotenv(start: Path = Path.cwd(), filename: str = ".env") -> Path | None:
+    for parent in [start] + list(start.parents):
+        env_path = parent / filename
+        if env_path.is_file():
+            return env_path
+    return None
+
+
+class Settings(BaseSettings):
+    ALGORITHM: str = "HS256"
+    SECRET_KEY: str = ""
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    SQLALCHEMY_DATABASE_URL: str = ""
+    ALLOW_REGISTER: bool = True
+
+    model_config = SettingsConfigDict(env_file=find_dotenv(), env_file_encoding="utf-8")
+
+
+settings = Settings()

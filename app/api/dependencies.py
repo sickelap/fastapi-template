@@ -3,7 +3,7 @@ from typing import Annotated
 
 import jwt
 
-from app.config import ALGORITHM, SECRET_KEY
+from app.config import settings
 from app.models import User, UserInDB
 from app.service.user import UserService
 from fastapi import Depends, HTTPException, status
@@ -22,7 +22,9 @@ def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
         user_id = payload.get("sub")
         if user_id is None:
             raise credentials_exception

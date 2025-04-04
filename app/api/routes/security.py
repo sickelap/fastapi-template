@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from app.api.dependencies import get_current_active_user
-from app.config import ALLOW_REGISTER
+from app.config import settings
 from app.models import RefreshToken, RegisterUserRequest, Tokens, TokenType, User
 from app.service.security import verify_password
 from app.service.token import TokenService
@@ -18,7 +18,7 @@ def register(
     service: Annotated[UserService, Depends()],
     token_service: Annotated[TokenService, Depends()],
 ):
-    if not ALLOW_REGISTER:
+    if not settings.ALLOW_REGISTER:
         raise HTTPException(status.HTTP_403_FORBIDDEN)
     user = service.find_one_by_email(payload.email)
     if user:
