@@ -7,7 +7,7 @@ from app.config import settings
 
 engine = create_engine(
     settings.SQLALCHEMY_DATABASE_URL,
-    echo=True,
+    # echo=True,
 )
 
 

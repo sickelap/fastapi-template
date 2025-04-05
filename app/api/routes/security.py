@@ -12,7 +12,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 router = APIRouter(prefix="/auth")
 
 
-@router.post("/register", response_model=User)
+@router.post("/register", response_model=Tokens)
 def register(
     payload: RegisterUserRequest,
     service: Annotated[UserService, Depends()],
@@ -29,12 +29,12 @@ def register(
     return token_service.create(user.id, token_type=TokenType.BOTH)
 
 
-@router.post("/login")
+@router.post("/login", response_model=Tokens)
 def login(
     payload: Annotated[OAuth2PasswordRequestForm, Depends()],
     user_service: Annotated[UserService, Depends()],
     token_service: Annotated[TokenService, Depends()],
-) -> Tokens:
+):
     user = user_service.find_one_by_email(payload.username)
     if not user or not user.is_active:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
@@ -43,10 +43,10 @@ def login(
     return token_service.create(user.id, token_type=TokenType.BOTH)
 
 
-@router.post("/refresh")
+@router.post("/refresh", response_model=Tokens)
 async def refresh_token(
     payload: RefreshToken, token_service: Annotated[TokenService, Depends()]
-) -> Tokens:
+):
     tokens = token_service.refresh(payload.refresh_token)
     if not tokens:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
