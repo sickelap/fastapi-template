@@ -1,3 +1,5 @@
+from collections.abc import Iterator
+
 import pytest
 
 from app.main import app
@@ -18,6 +20,6 @@ def init_db(monkeypatch):
 
 
 @pytest.fixture()
-def client():
+def client(init_db) -> Iterator[TestClient]:
     with TestClient(app=app, base_url="http://test") as test_client:
         yield test_client
