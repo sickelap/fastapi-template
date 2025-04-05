@@ -19,6 +19,5 @@ def init_db(monkeypatch):
 
 @pytest.fixture()
 def client():
-    # app.dependency_overrides[get_session] = override_get_session
     with TestClient(app=app, base_url="http://test") as test_client:
         yield test_client
