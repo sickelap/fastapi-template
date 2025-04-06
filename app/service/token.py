@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from typing import Annotated
+from typing import Annotated, Optional
 from uuid import UUID
 
 import jwt
@@ -26,7 +26,7 @@ def create_refresh_token(user_id: UUID):
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
-def verify_access_token(token: str):
+def verify_access_token(token: str) -> Optional[dict]:
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
@@ -38,7 +38,7 @@ def verify_access_token(token: str):
         return None
 
 
-def verify_refresh_token(token: str):
+def verify_refresh_token(token: str) -> Optional[dict]:
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
@@ -58,11 +58,11 @@ class TokenService:
         data = verify_refresh_token(token)
         if not data or self.token_repo.is_blacklisted(token):
             return None
-        access_token = create_access_token(data.get("sub"))
-        refresh_token = create_refresh_token(data.get("sub"))
-        self.token_repo.add_token_to_blacklist(
-            token, datetime.fromtimestamp(data.get("exp"))
-        )
+        user_id = UUID(data.get("sub"))
+        ts = int(data.get("exp"))  # type: ignore
+        access_token = create_access_token(user_id)
+        refresh_token = create_refresh_token(user_id)
+        self.token_repo.add_token_to_blacklist(token, datetime.fromtimestamp(ts))
         return Tokens(access_token=access_token, refresh_token=refresh_token)
 
     def create(self, user_id, token_type: TokenType) -> Tokens:

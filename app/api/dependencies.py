@@ -1,10 +1,8 @@
 import uuid
 from typing import Annotated
 
-import jwt
-
-from app.config import settings
 from app.models import User, UserInDB
+from app.service.token import verify_access_token
 from app.service.user import UserService
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -22,9 +20,9 @@ def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
-        )
+        payload = verify_access_token(token)
+        if not payload:
+            raise credentials_exception
         user_id = payload.get("sub")
         if user_id is None:
             raise credentials_exception

@@ -11,9 +11,6 @@ class UserRepository:
     def __init__(self, session: Annotated[Session, Depends(get_session)]):
         self.session = session
 
-    def get_many_by(self, **kwargs):
-        return self.session.query(UserEntity).filter_by(**kwargs)
-
     def get_one_by(self, **kwargs) -> UserEntity | None:
         return self.session.query(UserEntity).filter_by(**kwargs).first()
 

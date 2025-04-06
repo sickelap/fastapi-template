@@ -5,7 +5,7 @@ from pydantic import EmailStr
 
 from app.persistence.entities import UserEntity
 from app.persistence.repository.user import UserRepository
-from app.service.security import security_context
+from app.service.security import get_password_hash
 from fastapi import Depends
 
 
@@ -23,7 +23,7 @@ class UserService:
         total_users = self.user_repo.get_count()
         user = UserEntity(
             email=username,
-            password=security_context.hash(password),
+            password=get_password_hash(password),
             is_active=True,
             is_superuser=total_users == 0,
         )
