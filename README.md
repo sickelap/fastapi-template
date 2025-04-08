@@ -9,6 +9,8 @@
 
 TBD:
 - reset password
+- autorun migrations on startup
+- create initial user on startup
 - OAuth2
 - OTP
 - async
