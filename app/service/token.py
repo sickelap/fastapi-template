@@ -3,7 +3,6 @@ from typing import Annotated, Optional
 from uuid import UUID
 
 import jwt
-
 from app.config import settings
 from app.models import Tokens, TokenType
 from app.persistence.repository.token import TokenRepository
@@ -54,15 +53,15 @@ class TokenService:
     def __init__(self, token_repo: Annotated[TokenRepository, Depends()]):
         self.token_repo = token_repo
 
-    def refresh(self, token: str) -> Tokens | None:
+    async def refresh(self, token: str) -> Tokens | None:
         data = verify_refresh_token(token)
-        if not data or self.token_repo.is_blacklisted(token):
+        if not data or await self.token_repo.is_blacklisted(token):
             return None
         user_id = UUID(data.get("sub"))
         ts = int(data.get("exp"))  # type: ignore
         access_token = create_access_token(user_id)
         refresh_token = create_refresh_token(user_id)
-        self.token_repo.add_token_to_blacklist(token, datetime.fromtimestamp(ts))
+        await self.token_repo.add_token_to_blacklist(token, datetime.fromtimestamp(ts))
         return Tokens(access_token=access_token, refresh_token=refresh_token)
 
     def create(self, user_id, token_type: TokenType) -> Tokens:

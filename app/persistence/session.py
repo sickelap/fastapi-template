@@ -1,22 +1,14 @@
-from typing import Iterator
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
-
 from app.config import settings
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-engine = create_engine(
+engine = create_async_engine(
     settings.SQLALCHEMY_DATABASE_URL,
-    # echo=True,
+    future=True,
+    # echo=True,,
 )
+async_session = async_sessionmaker(bind=engine, expire_on_commit=True)
 
 
-SessionLocal = sessionmaker(bind=engine)
-
-
-def get_session() -> Iterator[Session]:
-    session = SessionLocal()
-    try:
+async def get_session():
+    async with async_session() as session:
         yield session
-    finally:
-        session.close()

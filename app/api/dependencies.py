@@ -10,7 +10,7 @@ from fastapi.security import OAuth2PasswordBearer
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
 
 
-def get_current_user(
+async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     user_service: Annotated[UserService, Depends()],
 ):
@@ -28,7 +28,7 @@ def get_current_user(
             raise credentials_exception
     except Exception:
         raise credentials_exception
-    user = user_service.find_one_by_id(uuid.UUID(user_id))
+    user = await user_service.find_one_by_id(uuid.UUID(user_id))
     if user is None:
         raise credentials_exception
     return user

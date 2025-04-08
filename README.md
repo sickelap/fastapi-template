@@ -13,4 +13,3 @@ TBD:
 - create initial user on startup
 - OAuth2
 - OTP
-- async
