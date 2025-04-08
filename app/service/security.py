@@ -1,11 +1,15 @@
-from passlib.context import CryptContext
+from argon2 import PasswordHasher
+from argon2.exceptions import VerificationError
 
-security_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+ph = PasswordHasher()
 
 
 def verify_password(plain_password, hashed_password):
-    return security_context.verify(plain_password, hashed_password)
+    try:
+        return ph.verify(hashed_password, plain_password)
+    except VerificationError:
+        return False
 
 
 def get_password_hash(password):
-    return security_context.hash(password)
+    return ph.hash(password)
