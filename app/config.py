@@ -8,7 +8,6 @@ def find_dotenv(start: Path = Path.cwd(), filename: str = ".env") -> Path | None
         env_path = parent / filename
         if env_path.is_file():
             return env_path
-    return None
 
 
 class Settings(BaseSettings):

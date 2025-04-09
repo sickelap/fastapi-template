@@ -123,6 +123,12 @@ async def test_invalid_refresh_token(client, monkeypatch):
 
 
 @pytest.mark.asyncio
+async def test_refresh_token_without_token(client):
+    response = await refresh_tokens(client, "not-a-token")
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
 async def test_invalid_access_token(client, monkeypatch):
     original_secret_key = settings.SECRET_KEY
     monkeypatch.setattr(settings, "SECRET_KEY", "secret")
