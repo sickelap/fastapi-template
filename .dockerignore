@@ -1,0 +1,7 @@
+.git
+.venv
+.env
+htmlcov
+.pytest_cache
+__pycache__
+db.sqlite3
