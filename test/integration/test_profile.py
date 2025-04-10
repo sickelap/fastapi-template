@@ -15,10 +15,8 @@ async def test_first_registered_user_is_superuser(client):
     tokens = (await register(client, "user@local.host", "userpw")).json()
 
     headers = {"Authorization": f"Bearer {tokens['access_token']}"}
-    response = await client.get("/api/v1/profile", headers=headers)
+    data = (await client.get("/api/v1/profile", headers=headers)).json()
 
-    assert response.status_code == 200
-    data = response.json()
     assert data["email"] == "user@local.host"
     assert data["is_active"]
     assert data["is_superuser"]
