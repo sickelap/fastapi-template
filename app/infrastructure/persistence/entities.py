@@ -1,5 +1,4 @@
 from datetime import datetime
-from uuid import uuid4
 
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.sql import func
@@ -22,7 +21,7 @@ class TokenEntity(Base):
 class UserEntity(Base):
     __tablename__ = "user"
 
-    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4())
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     email: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str]
     is_active: Mapped[bool]

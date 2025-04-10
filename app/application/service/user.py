@@ -1,11 +1,12 @@
 from typing import Annotated
-from uuid import UUID
+from uuid import UUID, uuid4
+
+from fastapi import Depends
+from pydantic import EmailStr
 
 from app.application.service.security import get_password_hash
 from app.infrastructure.persistence.entities import UserEntity
 from app.infrastructure.persistence.repository.user import UserRepository
-from fastapi import Depends
-from pydantic import EmailStr
 
 
 class UserService:
@@ -21,6 +22,7 @@ class UserService:
     async def create_user(self, username: str, password: str) -> UserEntity | None:
         total_users = await self.user_repo.get_count()
         user = UserEntity(
+            id=uuid4(),
             email=username,
             password=get_password_hash(password),
             is_active=True,
