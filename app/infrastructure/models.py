@@ -1,8 +1,9 @@
 from enum import Enum
 from typing import Optional
 
-from app.domain.models import User
 from pydantic import BaseModel, EmailStr
+
+from app.domain.models import User
 
 
 class TokenType(Enum):
@@ -31,3 +32,8 @@ class UserInDB(User):
 class RegisterUserRequest(BaseModel):
     email: EmailStr
     password: str
+
+
+class ChangePasswordRequest(BaseModel):
+    old_password: str
+    new_password: str
