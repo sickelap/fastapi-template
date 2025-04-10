@@ -24,7 +24,7 @@ async def login(client, email="", password="") -> httpx.Response:
 
 async def get_my_details(client, token) -> httpx.Response:
     return await client.get(
-        "/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"}
+        "/api/v1/profile", headers={"Authorization": f"Bearer {token}"}
     )
 
 
