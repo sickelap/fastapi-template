@@ -1,4 +1,3 @@
 - password reset
 - OAuth2
 - OTP
-- fix test coverage for async tests

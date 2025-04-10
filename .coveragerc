@@ -1,6 +1,7 @@
 [run]
 branch = True
 source = app
+concurrency = greenlet
 omit =
     */tests/*
     */__init__.py
