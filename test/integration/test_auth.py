@@ -3,8 +3,9 @@ from datetime import timedelta
 
 import httpx
 import pytest
+from app.application.service.token import (create_access_token,
+                                           create_refresh_token)
 from app.config import settings
-from app.service.token import create_access_token, create_refresh_token
 from freezegun import freeze_time
 
 username = "user@local.host"

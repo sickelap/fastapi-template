@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
 from typing import Annotated
 
-from app.persistence.entities import TokenEntity
-from app.persistence.session import get_session
+from app.infrastructure.persistence.entities import TokenEntity
+from app.infrastructure.persistence.session import get_session
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession

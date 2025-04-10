@@ -1,7 +1,7 @@
 from typing import Annotated
 
-from app.persistence.entities import UserEntity
-from app.persistence.session import get_session
+from app.infrastructure.persistence.entities import UserEntity
+from app.infrastructure.persistence.session import get_session
 from fastapi import Depends
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession

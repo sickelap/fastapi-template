@@ -1,9 +1,9 @@
 from typing import Annotated
 from uuid import UUID
 
-from app.persistence.entities import UserEntity
-from app.persistence.repository.user import UserRepository
-from app.service.security import get_password_hash
+from app.application.service.security import get_password_hash
+from app.infrastructure.persistence.entities import UserEntity
+from app.infrastructure.persistence.repository.user import UserRepository
 from fastapi import Depends
 from pydantic import EmailStr
 

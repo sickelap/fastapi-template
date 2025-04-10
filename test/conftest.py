@@ -1,7 +1,7 @@
 import pytest_asyncio
+from app.infrastructure.persistence.entities import Base
+from app.infrastructure.persistence.session import get_session
 from app.main import app
-from app.persistence.entities import Base
-from app.persistence.session import get_session
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import StaticPool
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine

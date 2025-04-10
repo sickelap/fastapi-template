@@ -1,12 +1,13 @@
 from typing import Annotated
 
-from app.api.dependencies import get_current_active_user
+from app.application.service.security import verify_password
+from app.application.service.token import TokenService
+from app.application.service.user import UserService
 from app.config import settings
-from app.models import (RefreshToken, RegisterUserRequest, Tokens, TokenType,
-                        User)
-from app.service.security import verify_password
-from app.service.token import TokenService
-from app.service.user import UserService
+from app.domain.models import User
+from app.infrastructure.api.dependencies import get_current_active_user
+from app.infrastructure.models import (RefreshToken, RegisterUserRequest,
+                                       Tokens, TokenType)
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 

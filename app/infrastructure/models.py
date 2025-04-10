@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional
-from uuid import UUID
 
+from app.domain.models import User
 from pydantic import BaseModel, EmailStr
 
 
@@ -22,11 +22,6 @@ class RefreshToken(BaseModel):
 class Tokens(BaseModel):
     access_token: Optional[str] = None
     refresh_token: Optional[str] = None
-
-
-class User(BaseModel):
-    id: UUID
-    email: EmailStr
 
 
 class UserInDB(User):

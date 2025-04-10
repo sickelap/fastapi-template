@@ -3,7 +3,7 @@ import os
 from logging.config import fileConfig
 
 from alembic import context
-from app.persistence.entities import Base
+from app.infrastructure.persistence.entities import Base
 from sqlalchemy.ext.asyncio import create_async_engine
 
 config = context.config

@@ -1,9 +1,10 @@
 import uuid
 from typing import Annotated
 
-from app.models import User, UserInDB
-from app.service.token import verify_access_token
-from app.service.user import UserService
+from app.application.service.token import verify_access_token
+from app.application.service.user import UserService
+from app.domain.models import User
+from app.infrastructure.models import UserInDB
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 

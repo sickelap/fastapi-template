@@ -4,8 +4,8 @@ from uuid import UUID
 
 import jwt
 from app.config import settings
-from app.models import Tokens, TokenType
-from app.persistence.repository.token import TokenRepository
+from app.infrastructure.models import Tokens, TokenType
+from app.infrastructure.persistence.repository.token import TokenRepository
 from fastapi import Depends
 
 
