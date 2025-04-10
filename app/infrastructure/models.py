@@ -26,8 +26,6 @@ class Tokens(BaseModel):
 
 class UserInDB(User):
     password: str
-    is_active: bool
-    is_superuser: bool
 
 
 class RegisterUserRequest(BaseModel):
