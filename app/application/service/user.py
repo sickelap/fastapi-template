@@ -5,6 +5,7 @@ from fastapi import Depends
 from pydantic import EmailStr
 
 from app.application.service.security import get_password_hash, password_rules_ok
+from app.infrastructure.exceptions import PasswordError
 from app.infrastructure.persistence.entities import UserEntity
 from app.infrastructure.persistence.repository.user import UserRepository
 
@@ -33,12 +34,11 @@ class UserService:
     async def change_password(
         self, user_id: UUID, old_password: str, new_password: str
     ):
-        user = await self.user_repo.get_one_by(id=user_id)
-        if not user:
-            raise Exception("unable to find user")
         if old_password == new_password:
-            raise Exception("old and new passwords are the same")
+            raise PasswordError("old and new passwords are the same")
         if not password_rules_ok(new_password):
-            raise Exception("insecure password")
+            raise PasswordError("insecure password")
+        user = await self.user_repo.get_one_by(id=user_id)
+        assert user is not None
         user.password = get_password_hash(new_password)
         return await self.user_repo.save(user)

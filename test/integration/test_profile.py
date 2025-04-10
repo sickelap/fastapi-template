@@ -51,3 +51,23 @@ async def test_update_password(client):
 
     response = await login(client, "user@local.host", "pwuser")
     assert response.status_code == 200, "unable to login with new password"
+
+
+@pytest.mark.asyncio
+async def test_update_password_shoud_fail_when_both_passwords_are_the_same(client):
+    tokens = (await register(client, "user@local.host", "userpw")).json()
+
+    payload = {"old_password": "userpw", "new_password": "userpw"}
+    headers = {"Authorization": f"Bearer {tokens['access_token']}"}
+    response = await client.post("/api/v1/profile", json=payload, headers=headers)
+    assert response.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_update_password_shoud_fail_when_using_short_password(client):
+    tokens = (await register(client, "user@local.host", "userpw")).json()
+
+    payload = {"old_password": "userpw", "new_password": "pass"}
+    headers = {"Authorization": f"Bearer {tokens['access_token']}"}
+    response = await client.post("/api/v1/profile", json=payload, headers=headers)
+    assert response.status_code == 400

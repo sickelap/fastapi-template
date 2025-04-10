@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 
 from app.application.service.user import UserService
 from app.domain.models import User
@@ -21,9 +21,6 @@ async def update_password(
     request: ChangePasswordRequest,
     user_service: Annotated[UserService, Depends()],
 ):
-    try:
-        await user_service.change_password(
-            user.id, request.old_password, request.new_password
-        )
-    except Exception as e:
-        raise HTTPException(400, str(e))
+    await user_service.change_password(
+        user.id, request.old_password, request.new_password
+    )

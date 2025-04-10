@@ -5,7 +5,7 @@ ph = PasswordHasher()
 
 
 def password_rules_ok(password):
-    return True
+    return len(password) > 5
 
 
 def verify_password(plain_password, hashed_password):
