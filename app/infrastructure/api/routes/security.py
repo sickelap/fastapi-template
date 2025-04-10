@@ -1,15 +1,18 @@
 from typing import Annotated
 
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+
 from app.application.service.security import verify_password
 from app.application.service.token import TokenService
 from app.application.service.user import UserService
 from app.config import settings
-from app.domain.models import User
-from app.infrastructure.api.dependencies import get_current_active_user
-from app.infrastructure.models import (RefreshToken, RegisterUserRequest,
-                                       Tokens, TokenType)
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from app.infrastructure.models import (
+    RefreshToken,
+    RegisterUserRequest,
+    Tokens,
+    TokenType,
+)
 
 router = APIRouter(prefix="/auth")
 
@@ -53,8 +56,3 @@ async def refresh_token(
     if not tokens:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     return tokens
-
-
-@router.get("/me", response_model=User)
-async def get_me(user: Annotated[User, Depends(get_current_active_user)]):
-    return user
