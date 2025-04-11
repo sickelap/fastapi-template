@@ -59,3 +59,12 @@ class UserService:
         if not user:
             raise UpdateUserError()
         return user
+
+    async def disable_user(self, user_id: UUID) -> UserEntity:
+        user = await self.user_repo.get_one_by(id=user_id)
+        assert user is not None
+        user.is_active = False
+        user = await self.user_repo.save(user)
+        if not user:
+            raise UpdateUserError()
+        return user

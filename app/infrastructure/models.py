@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import Optional
+from uuid import UUID
 
 from pydantic import BaseModel, EmailStr
 
@@ -37,3 +38,7 @@ class RegisterUserRequest(BaseModel):
 class ChangePasswordRequest(BaseModel):
     old_password: str
     new_password: str
+
+
+class DisableUserRequest(BaseModel):
+    user_id: UUID
