@@ -18,7 +18,7 @@ async def login(client, email, password) -> httpx.Response:
 @pytest.mark.asyncio
 async def test_first_registered_user_is_superuser(client):
     tokens = (await register(client, "user@local.host", "userpw")).json()
-
+    print("tokens", tokens)
     headers = {"Authorization": f"Bearer {tokens['access_token']}"}
     data = (await client.get("/api/v1/profile", headers=headers)).json()
 

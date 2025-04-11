@@ -1,14 +1,25 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from app.infrastructure.exceptions import PasswordError, UserNotFound
+from app.application.exceptions import (
+    EmailInUse,
+    InvalidCredentials,
+    PasswordRulesError,
+    RegistrationNotAllowed,
+    UserInactive,
+    UserNotFound,
+)
 
 
 def map_exceptions(app):
-    @app.exception_handler(UserNotFound)
-    async def _(r: Request, e: UserNotFound):
-        return JSONResponse(status_code=404, content={"message": "not found"})
+    def handle_exception(code: int, e: type[Exception]):
+        @app.exception_handler(e)
+        def _(_: Request, e):
+            return JSONResponse(status_code=code, content={"message": str(e)})
 
-    @app.exception_handler(PasswordError)
-    async def _(r: Request, e: PasswordError):
-        return JSONResponse(status_code=400, content={"message": e.message})
+    handle_exception(404, UserNotFound)
+    handle_exception(400, PasswordRulesError)
+    handle_exception(409, EmailInUse)
+    handle_exception(403, RegistrationNotAllowed)
+    handle_exception(401, InvalidCredentials)
+    handle_exception(403, UserInactive)
